@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiCivics | Intelligenza Digitale</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">DigiCivics.</a>
+            
+            <ul class="nav-menu hidden-mobile" id="nav-menu">
+                <li><a href="index.html" class="nav-link active">Panoramica</a></li>
+                <li><a href="cyberbullismo.html" class="nav-link">Cyberbullismo</a></li>
+                <li><a href="tools.html" class="nav-link">Privacy</a></li>
+                <li><a href="simulator.html" class="nav-link">Simulatore</a></li>
+            </ul>
+
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Cambia tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="hamburger" id="hamburger" aria-label="Menu" style="display: none; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-bg"></div>
+            
+            <div class="container hero-content">
+                <h1 class="title-hero reveal">Cittadini in <br><span class="text-gradient" id="typewriter">Rete.</span></h1>
+                <p class="subtitle reveal delay-1" style="margin-top: 1.5rem; max-width: 700px; margin-inline: auto;">
+                    Pro. Esercita i tuoi diritti. Rispetta i doveri. Scopri l'ecosistema digitale con la consapevolezza di chi sa proteggere se stesso e gli altri.
+                </p>
+                
+                <div class="reveal delay-2" style="margin-top: 2.5rem; display: flex; gap: 1rem; justify-content: center;">
+                    <a href="#bento" class="btn btn-primary">Esplora il progetto</a>
+                    <a href="simulator.html" class="btn btn-outline">Avvia Simulatore</a>
+                </div>
+            </div>
+            
+            <!-- Hero Graphic Abstract (Mind Map) -->
+            <div class="container hero-media reveal delay-3">
+                <style>
+                    .anim-line {
+                        stroke-dasharray: 8, 8;
+                        animation: marchingAnts 30s linear infinite;
+                    }
+                    @keyframes marchingAnts {
+                        to { stroke-dashoffset: -1000; }
+                    }
+                    .map-node {
+                        position: absolute;
+                        z-index: 2;
+                        background: var(--glass-bg);
+                        backdrop-filter: blur(12px);
+                        -webkit-backdrop-filter: blur(12px);
+                        padding: 0.8rem 1.5rem;
+                        border-radius: var(--radius-full);
+                        border: 1px solid var(--border-color);
+                        box-shadow: var(--shadow-md);
+                        display: flex;
+                        align-items: center;
+                        gap: 0.6rem;
+                        transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.3s;
+                        cursor: default;
+                    }
+                    .map-node:hover {
+                        transform: translate(-50%, -50%) scale(1.1) !important;
+                        box-shadow: var(--shadow-lg);
+                        border-color: var(--primary);
+                    }
+                    /* Custom positioning for nodes via inline styles, but keeping transform to center them */
+                </style>
+                <div style="aspect-ratio: 21/9; background: var(--bg-surface); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; border: 1px solid var(--border-color);">
+                    <!-- Apple-like abstract gradients -->
+                    <div style="position: absolute; width: 60%; height: 60%; background: radial-gradient(circle, var(--primary), transparent); filter: blur(80px); opacity: 0.2; top: -10%; left: -10%;"></div>
+                    <div style="position: absolute; width: 60%; height: 60%; background: radial-gradient(circle, var(--secondary), transparent); filter: blur(80px); opacity: 0.15; bottom: -10%; right: -10%;"></div>
+                    
+                    <!-- SVG Lines connecting nodes -->
+                    <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:var(--primary);stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:var(--secondary);stop-opacity:0.8" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Lines drawn from Center (50,50) to the nodes -->
+                        <line x1="50%" y1="50%" x2="25%" y2="25%" stroke="url(#grad1)" stroke-width="2" class="anim-line"/>
+                        <line x1="50%" y1="50%" x2="75%" y2="25%" stroke="url(#grad1)" stroke-width="2" class="anim-line"/>
+                        <line x1="50%" y1="50%" x2="80%" y2="70%" stroke="url(#grad1)" stroke-width="2" class="anim-line"/>
+                        <line x1="50%" y1="50%" x2="20%" y2="75%" stroke="url(#grad1)" stroke-width="2" class="anim-line"/>
+                        <line x1="50%" y1="50%" x2="50%" y2="15%" stroke="url(#grad1)" stroke-width="2" class="anim-line"/>
+                    </svg>
+
+                    <!-- Center Node -->
+                    <div style="position: absolute; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg-surface); padding: 2rem; border-radius: 50%; box-shadow: var(--shadow-lg), 0 0 40px rgba(0,113,227,0.2); border: 2px solid var(--primary); animation: pulseGlow 4s infinite alternate; text-align: center;">
+                        <i class="fa-solid fa-network-wired" style="font-size: 2.5rem; color: var(--text-main); margin-bottom: 0.5rem;"></i>
+                        <span style="font-weight: 800; font-size: 1rem; color: var(--text-main); letter-spacing: -0.02em;">Cittadinanza<br>Digitale</span>
+                    </div>
+
+                    <!-- Surrounding Nodes -->
+                    <div class="map-node" style="top: 25%; left: 25%; transform: translate(-50%, -50%);">
+                        <i class="fa-solid fa-fire" style="color: var(--danger); font-size: 1.2rem;"></i> <span style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Flaming</span>
+                    </div>
+
+                    <div class="map-node" style="top: 25%; left: 75%; transform: translate(-50%, -50%);">
+                        <i class="fa-solid fa-user-ninja" style="color: var(--warning); font-size: 1.2rem;"></i> <span style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Doxing</span>
+                    </div>
+
+                    <div class="map-node" style="top: 70%; left: 80%; transform: translate(-50%, -50%);">
+                        <i class="fa-solid fa-brain" style="color: var(--success); font-size: 1.2rem;"></i> <span style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Fake News</span>
+                    </div>
+
+                    <div class="map-node" style="top: 75%; left: 20%; transform: translate(-50%, -50%);">
+                        <i class="fa-solid fa-fingerprint" style="color: var(--primary); font-size: 1.2rem;"></i> <span style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Privacy</span>
+                    </div>
+
+                    <div class="map-node" style="top: 15%; left: 50%; transform: translate(-50%, -50%);">
+                        <i class="fa-solid fa-ban" style="color: var(--secondary); font-size: 1.2rem;"></i> <span style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Cyberbullismo</span>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS SECTION -->
+        <section class="section stats-section" style="background: var(--bg-surface-alt); padding: 4rem 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+            <div class="container">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center;">
+                    <div class="reveal delay-1">
+                        <div style="font-size: 3.5rem; font-weight: 800; color: var(--primary); font-family: var(--font-heading); display: flex; align-items: center; justify-content: center;">
+                            <span class="counter" data-target="85">0</span>%
+                        </div>
+                        <p style="color: var(--text-muted); font-weight: 500;">Dei ragazzi italiani usa i social quotidianamente.</p>
+                    </div>
+                    <div class="reveal delay-2">
+                        <div style="font-size: 3.5rem; font-weight: 800; color: var(--warning); font-family: var(--font-heading); display: flex; align-items: center; justify-content: center;">
+                            <span class="counter" data-target="54">0</span>%
+                        </div>
+                        <p style="color: var(--text-muted); font-weight: 500;">Dei giovani ha assistito ad atti di cyberbullismo.</p>
+                    </div>
+                    <div class="reveal delay-3">
+                        <div style="font-size: 3.5rem; font-weight: 800; color: var(--success); font-family: var(--font-heading); display: flex; align-items: center; justify-content: center;">
+                            +<span class="counter" data-target="71">0</span>
+                        </div>
+                        <p style="color: var(--text-muted); font-weight: 500;">La legge n. 71 del 2017 tutela i minori sulla rete.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BENTO GRID SECTION -->
+        <section id="bento" class="section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="pill">Moduli Didattici</span>
+                    <h2 class="title-xl">Tutto quello che serve per una rete sicura.</h2>
+                    <p class="subtitle mt-4">Un hub di strumenti e conoscenze progettato per l'Educazione Civica Digitale.</p>
+                </div>
+
+                <div class="bento-grid">
+                    
+                    <!-- Card 1: Large (Cyberbullismo) -->
+                    <div class="bento-card bento-large reveal">
+                        <div class="card-icon" style="color: var(--primary);"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3 class="card-title">Cyberbullismo. Fermalo qui.</h3>
+                        <p class="card-text" style="max-width: 80%;">Analizziamo le dinamiche del flaming, del doxing e dell'impersonation. Scopri gli strumenti legali (L. 71/2017) e psicologici per difenderti o difendere gli altri.</p>
+                        <div class="card-link-wrapper">
+                            <a href="cyberbullismo.html" class="card-link">Leggi l'approfondimento <i class="fa-solid fa-angle-right"></i></a>
+                        </div>
+                        <i class="fa-solid fa-ban card-bg-image"></i>
+                    </div>
+
+                    <!-- Card 2: Tall (Simulator) -->
+                    <div class="bento-card bento-tall reveal delay-1" style="background: linear-gradient(180deg, var(--bg-surface), var(--bg-surface-alt));">
+                        <div class="card-icon" style="color: var(--warning); background: rgba(245, 158, 11, 0.1);"><i class="fa-solid fa-mobile-screen"></i></div>
+                        <h3 class="card-title">Il Simulatore OS</h3>
+                        <p class="card-text">Non basta la teoria. Mettiti alla prova in una simulazione di chat realistica. Le tue scelte in tempo reale determineranno l'esito della storia.</p>
+                        
+                        <div style="margin: 2rem 0; flex: 1; background: var(--bg-main); border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; padding: 1rem; gap: 0.5rem; box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);">
+                            <div style="background: var(--warning); color: white; padding: 0.8rem; border-radius: 12px; border-bottom-right-radius: 2px; align-self: flex-end; font-size: 0.85rem;">Manda il video dai! 😂</div>
+                            <div style="background: var(--bg-surface); color: var(--text-main); padding: 0.8rem; border-radius: 12px; border-bottom-left-radius: 2px; align-self: flex-start; font-size: 0.85rem; border: 1px solid var(--border-color);">Questo è cyberbullismo.</div>
+                        </div>
+
+                        <div class="card-link-wrapper">
+                            <a href="simulator.html" class="card-link">Prova ora <i class="fa-solid fa-angle-right"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Normal (Privacy) -->
+                    <div class="bento-card reveal delay-2">
+                        <div class="card-icon" style="color: var(--secondary); background: rgba(13, 148, 136, 0.1);"><i class="fa-solid fa-fingerprint"></i></div>
+                        <h3 class="card-title">La tua Impronta</h3>
+                        <p class="card-text">Analizza la forza delle tue password e naviga in sicurezza.</p>
+                        <div class="card-link-wrapper">
+                            <a href="tools.html" class="card-link">Apri Dashboard <i class="fa-solid fa-angle-right"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Normal (Fake News) -->
+                    <div class="bento-card reveal delay-3">
+                        <div class="card-icon" style="color: var(--success); background: rgba(16, 185, 129, 0.1);"><i class="fa-solid fa-book"></i></div>
+                        <h3 class="card-title">Glossario Dinamico</h3>
+                        <p class="card-text">Distingui la verità dalla disinformazione. Glossario live.</p>
+                        <div class="card-link-wrapper">
+                            <a href="tools.html" class="card-link">Consulta Glossario <i class="fa-solid fa-angle-right"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">DigiCivics.</h3>
+                    <p style="max-width: 300px;">Progettato per l'eccellenza in Tecnologie (TDP) ed Educazione Civica.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Pagine</h4>
+                    <ul>
+                        <li><a href="index.html">Panoramica</a></li>
+                        <li><a href="cyberbullismo.html">Cyberbullismo</a></li>
+                        <li><a href="tools.html">Dashboard Privacy</a></li>
+                        <li><a href="simulator.html">Simulatore OS</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Risorse</h4>
+                    <ul>
+                        <li><a href="#">Generazioni Connesse</a></li>
+                        <li><a href="#">Polizia Postale</a></li>
+                        <li><a href="#">Garante Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Copyright © 2026. Tutti i diritti riservati.</p>
+                <p>Sviluppato con standard web avanzati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/home.js"></script>
+</body>
+</html>

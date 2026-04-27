@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiCivics | Cyberbullismo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">DigiCivics.</a>
+            
+            <ul class="nav-menu hidden-mobile" id="nav-menu">
+                <li><a href="index.html" class="nav-link">Panoramica</a></li>
+                <li><a href="cyberbullismo.html" class="nav-link active">Cyberbullismo</a></li>
+                <li><a href="tools.html" class="nav-link">Privacy</a></li>
+                <li><a href="simulator.html" class="nav-link">Simulatore</a></li>
+            </ul>
+
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Cambia tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="hamburger" id="hamburger" aria-label="Menu" style="display: none; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main style="padding-top: 100px;">
+        
+        <!-- Intro Hero -->
+        <section class="section" style="padding-bottom: 4rem;">
+            <div class="container" style="text-align: center; max-width: 900px;">
+                <h1 class="title-hero reveal">Le parole pesano.</h1>
+                <p class="subtitle reveal delay-1" style="margin-top: 1.5rem;">
+                    Dietro ogni schermo c'è una persona reale. Il cyberbullismo trasforma la tecnologia in un'arma, ma insieme possiamo disinnescarla.
+                </p>
+            </div>
+        </section>
+
+        <!-- Feature Row 1 (Apple Product style) -->
+        <section class="section" style="padding-top: 2rem;">
+            <div class="container">
+                <div class="feature-row reveal">
+                    <div class="feature-text">
+                        <h2 class="title-xl">Flaming & Doxing.</h2>
+                        <p class="subtitle mt-4">
+                            Il <strong>Flaming</strong> consiste nell'invio di messaggi violenti per scatenare liti. Il <strong>Doxing</strong> è la pubblicazione di dati privati (indirizzo, numero) per esporre la vittima al pubblico ludibrio. Due facce della stessa medaglia: l'uso dell'anonimato per ferire.
+                        </p>
+                    </div>
+                    <div class="feature-visual" style="background: linear-gradient(135deg, rgba(255,59,48,0.1), rgba(255,149,0,0.1)); border-color: rgba(255,59,48,0.2);">
+                        <i class="fa-solid fa-fire" style="font-size: 8rem; color: var(--danger); filter: drop-shadow(0 10px 20px rgba(255,59,48,0.3));"></i>
+                    </div>
+                </div>
+
+                <div class="feature-row reverse reveal">
+                    <div class="feature-text">
+                        <h2 class="title-xl">L'illusione dell'anonimato.</h2>
+                        <p class="subtitle mt-4">
+                            A differenza del bullismo fisico, quello online è pervasivo: raggiunge la vittima ovunque, 24 ore su 24. L'effetto moltiplicatore della rete fa sì che un singolo contenuto possa essere visto da migliaia di persone in pochi minuti.
+                        </p>
+                    </div>
+                    <div class="feature-visual" style="background: linear-gradient(135deg, rgba(0,113,227,0.1), rgba(88,86,214,0.1)); border-color: rgba(0,113,227,0.2);">
+                        <i class="fa-solid fa-masks-theater" style="font-size: 8rem; color: var(--primary); filter: drop-shadow(0 10px 20px rgba(0,113,227,0.3));"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Callout Banner -->
+        <section class="section" style="padding: 0 2rem 8rem 2rem;">
+            <div class="container reveal" style="background: var(--text-main); color: var(--bg-main); border-radius: var(--radius-lg); padding: 5rem 3rem; text-align: center; box-shadow: var(--shadow-float);">
+                <i class="fa-solid fa-scale-balanced" style="font-size: 4rem; margin-bottom: 2rem; opacity: 0.9;"></i>
+                <h2 class="title-xl" style="color: var(--bg-main);">Legge n. 71/2017</h2>
+                <p style="font-size: 1.2rem; max-width: 700px; margin: 1.5rem auto 3rem auto; opacity: 0.8; line-height: 1.5;">
+                    L'Italia ha una legge specifica contro il cyberbullismo. I minori (dai 14 anni in su) possono richiedere direttamente ai gestori dei social network l'oscuramento o la rimozione dei contenuti offensivi.
+                </p>
+                <a href="simulator.html" class="btn" style="background: var(--bg-main); color: var(--text-main);">
+                    Esercitati nel Simulatore
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>Copyright © 2026 DigiCivics. Tutti i diritti riservati.</p>
+                <p>Progetto Educazione Civica.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

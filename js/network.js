@@ -1,0 +1,229 @@
+/**
+ * network.js - Social Network Virality Simulator
+ * Un algoritmo basato su grafi per simulare il contagio di fake news/cyberbullismo.
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('network-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const overlay = document.getElementById('network-overlay');
+    const gameover = document.getElementById('network-gameover');
+    const victory = document.getElementById('network-victory');
+    const startBtn = document.getElementById('start-network');
+    const restartFailBtn = document.getElementById('restart-network-fail');
+    const restartWinBtn = document.getElementById('restart-network-win');
+    const scoreDisplay = document.getElementById('network-score');
+
+    let animationId;
+    let isRunning = false;
+    let nodes = [];
+    const numNodes = 40; // Ridotto per semplificare
+    const connectionDistance = 80; // Distanza massima per creare un arco
+    const infectionProbability = 0.005; // Contagio molto più lento
+
+    // Colori
+    const colors = {
+        healthy: '#10b981', // Verde
+        infected: '#ef4444', // Rosso
+        blocked: '#64748b', // Grigio
+        edge: 'rgba(148, 163, 184, 0.2)',
+        edgeInfected: 'rgba(239, 68, 68, 0.5)'
+    };
+
+    class Node {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.vx = (Math.random() - 0.5) * 1.5;
+            this.vy = (Math.random() - 0.5) * 1.5;
+            this.radius = 6 + Math.random() * 4;
+            this.state = 'healthy'; // healthy, infected, blocked
+            this.neighbors = [];
+        }
+
+        update(width, height) {
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // Rimbalzo sui bordi
+            if (this.x < this.radius || this.x > width - this.radius) this.vx *= -1;
+            if (this.y < this.radius || this.y > height - this.radius) this.vy *= -1;
+        }
+
+        draw(ctx) {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = colors[this.state];
+            ctx.fill();
+            
+            // Effetto bagliore per i nodi infetti
+            if (this.state === 'infected') {
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = colors.infected;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+        }
+    }
+
+    function initNetwork() {
+        // Resize canvas to parent
+        const parent = canvas.parentElement;
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+
+        nodes = [];
+        for (let i = 0; i < numNodes; i++) {
+            nodes.push(new Node(
+                Math.random() * (canvas.width - 20) + 10,
+                Math.random() * (canvas.height - 20) + 10
+            ));
+        }
+
+        // Infetta un nodo casuale per iniziare
+        nodes[Math.floor(Math.random() * numNodes)].state = 'infected';
+        updateScore();
+    }
+
+    function drawNetwork() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Aggiorna posizioni e trova vicini
+        for (let i = 0; i < nodes.length; i++) {
+            nodes[i].update(canvas.width, canvas.height);
+            nodes[i].neighbors = [];
+        }
+
+        // Disegna archi e diffondi infezione
+        ctx.lineWidth = 1;
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < connectionDistance) {
+                    nodes[i].neighbors.push(nodes[j]);
+                    nodes[j].neighbors.push(nodes[i]);
+
+                    // Determina il colore dell'arco
+                    let edgeColor = colors.edge;
+                    if (nodes[i].state === 'infected' && nodes[j].state === 'infected') {
+                        edgeColor = colors.edgeInfected;
+                    } else if (
+                        (nodes[i].state === 'infected' && nodes[j].state === 'healthy') ||
+                        (nodes[j].state === 'infected' && nodes[i].state === 'healthy')
+                    ) {
+                        edgeColor = colors.edgeInfected;
+                        
+                        // Algoritmo di propagazione del contagio
+                        if (Math.random() < infectionProbability) {
+                            if (nodes[i].state === 'healthy') nodes[i].state = 'infected';
+                            if (nodes[j].state === 'healthy') nodes[j].state = 'infected';
+                        }
+                    }
+
+                    // Disegna arco
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.strokeStyle = edgeColor;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Disegna nodi
+        for (let node of nodes) {
+            node.draw(ctx);
+        }
+
+        updateScore();
+        checkGameEnd();
+
+        if (isRunning) {
+            animationId = requestAnimationFrame(drawNetwork);
+        }
+    }
+
+    function updateScore() {
+        let infectedCount = nodes.filter(n => n.state === 'infected').length;
+        let percentage = Math.round((infectedCount / numNodes) * 100);
+        scoreDisplay.innerText = `Infezione: ${percentage}%`;
+        
+        if (percentage > 50) {
+            scoreDisplay.style.color = 'var(--danger)';
+        } else if (percentage > 20) {
+            scoreDisplay.style.color = 'var(--warning)';
+        } else {
+            scoreDisplay.style.color = 'var(--text-main)';
+        }
+        return percentage;
+    }
+
+    function checkGameEnd() {
+        let infectedCount = nodes.filter(n => n.state === 'infected').length;
+        let percentage = Math.round((infectedCount / numNodes) * 100);
+
+        if (percentage >= 70) {
+            isRunning = false;
+            gameover.style.display = 'flex';
+        } else if (infectedCount === 0) {
+            isRunning = false;
+            victory.style.display = 'flex';
+        }
+    }
+
+    // Interazione utente: Clicca per moderare/bloccare un nodo
+    canvas.addEventListener('mousedown', (e) => {
+        if (!isRunning) return;
+        
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        for (let node of nodes) {
+            if (node.state === 'infected') {
+                const dx = mouseX - node.x;
+                const dy = mouseY - node.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                // Area di click leggermente più grande del raggio visivo per usabilità
+                if (dist <= node.radius + 15) {
+                    node.state = 'blocked';
+                    break; // Modera un solo nodo alla volta
+                }
+            }
+        }
+    });
+
+    // Resize dinamico
+    window.addEventListener('resize', () => {
+        if (canvas.parentElement) {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+    });
+
+    function startGame() {
+        overlay.style.display = 'none';
+        gameover.style.display = 'none';
+        victory.style.display = 'none';
+        initNetwork();
+        isRunning = true;
+        drawNetwork();
+    }
+
+    startBtn.addEventListener('click', startGame);
+    restartFailBtn.addEventListener('click', startGame);
+    restartWinBtn.addEventListener('click', startGame);
+
+    // Inizializza visivamente in background (fermato)
+    initNetwork();
+    drawNetwork();
+});zializza visivamente in background (fermato)
+    initNetwork();
+    drawNetwork();
+});

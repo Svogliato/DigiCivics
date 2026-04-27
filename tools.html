@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiCivics | Strumenti Privacy</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">DigiCivics.</a>
+            
+            <ul class="nav-menu hidden-mobile" id="nav-menu">
+                <li><a href="index.html" class="nav-link">Panoramica</a></li>
+                <li><a href="cyberbullismo.html" class="nav-link">Cyberbullismo</a></li>
+                <li><a href="tools.html" class="nav-link active">Privacy</a></li>
+                <li><a href="simulator.html" class="nav-link">Simulatore</a></li>
+            </ul>
+
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Cambia tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="hamburger" id="hamburger" aria-label="Menu" style="display: none; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main style="padding-top: 100px; padding-bottom: 6rem;">
+        
+        <section class="section" style="padding-bottom: 2rem;">
+            <div class="container" style="text-align: center;">
+                <h1 class="title-xl reveal">Strumenti di Difesa.</h1>
+                <p class="subtitle reveal delay-1" style="margin-top: 1rem;">La sicurezza inizia dalla consapevolezza.</p>
+            </div>
+        </section>
+
+        <section class="section" style="padding-top: 2rem;">
+            <div class="container">
+                <div class="card-grid">
+
+                    <!-- Tool 1: Social Network Virality Simulator -->
+                    <div class="card reveal" style="grid-column: 1 / -1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div class="card-icon" style="margin: 0; color: var(--danger); background: rgba(239, 68, 68, 0.1);"><i class="fa-solid fa-virus"></i></div>
+                                <h2 class="title-md" style="margin: 0;">Algoritmo di Contagio (Network Graph)</h2>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <span style="color: var(--success);"><i class="fa-solid fa-circle"></i> Sani</span>
+                                    <span style="color: var(--danger);"><i class="fa-solid fa-circle"></i> Infetti</span>
+                                    <span style="color: var(--text-muted);"><i class="fa-solid fa-circle"></i> Bloccati</span>
+                                </div>
+                                <div style="font-weight: bold; color: var(--text-main); background: var(--bg-surface); padding: 0.3rem 0.8rem; border-radius: var(--radius-full); border: 1px solid var(--border-color);" id="network-score">Infezione: 0%</div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-4">Un simulatore basato su <strong>teoria dei grafi</strong> che mostra come le Fake News o i contenuti offensivi diventano virali. L'algoritmo calcola le distanze tra i nodi e propaga l'infezione. <strong>Interagisci:</strong> Clicca tempestivamente sui nodi rossi (utenti che diffondono il contenuto) per "bannarli" e fermare il contagio!</p>
+                        
+                        <div style="position: relative; width: 100%; height: 400px; background: #0f172a; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-color); box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
+                            <canvas id="network-canvas" style="display: block; width: 100%; height: 100%; cursor: crosshair;"></canvas>
+                            
+                            <div id="network-overlay" style="position: absolute; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; transition: opacity 0.3s;">
+                                <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                                <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1.5rem; text-align: center;">Sei il Moderatore</h3>
+                                <p style="color: #94a3b8; margin-bottom: 1.5rem; max-width: 400px; text-align: center; font-size: 0.95rem; padding: 0 1rem;">Ferma la diffusione isolando i nodi infetti. Se l'infezione supera il 70%, il sistema collassa.</p>
+                                <button id="start-network" class="btn btn-primary" style="padding: 0.8rem 2rem; font-size: 1.1rem; box-shadow: 0 0 20px rgba(37,99,235,0.4);">Avvia Algoritmo</button>
+                            </div>
+
+                            <div id="network-gameover" style="position: absolute; inset: 0; background: rgba(239, 68, 68, 0.9); backdrop-filter: blur(4px); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
+                                <h3 style="color: white; margin-bottom: 0.5rem; font-size: 2rem; text-align: center;">Sistema Compromesso</h3>
+                                <p style="color: white; margin-bottom: 1.5rem; text-align: center; padding: 0 1rem;">Il contenuto virale ha raggiunto la massa critica.</p>
+                                <button id="restart-network-fail" class="btn" style="background: white; color: var(--danger);">Riprova</button>
+                            </div>
+
+                            <div id="network-victory" style="position: absolute; inset: 0; background: rgba(16, 185, 129, 0.9); backdrop-filter: blur(4px); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
+                                <h3 style="color: white; margin-bottom: 0.5rem; font-size: 2rem; text-align: center;">Contagio Fermato!</h3>
+                                <p style="color: white; margin-bottom: 1.5rem; text-align: center; padding: 0 1rem;">Hai moderato la rete in tempo.</p>
+                                <button id="restart-network-win" class="btn" style="background: white; color: var(--success);">Ottimo lavoro</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tool 2: Password Analyzer -->
+                    <div class="card reveal delay-1">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                            <div class="card-icon" style="margin: 0;"><i class="fa-solid fa-key"></i></div>
+                            <h2 class="title-md" style="margin: 0;">Password Analyzer</h2>
+                        </div>
+                        <p class="card-text mb-4" style="margin-bottom: 2rem;">Un algoritmo locale valuta la complessità della tua password. Nessun dato viene inviato a server esterni.</p>
+                        
+                        <div style="position: relative; margin-bottom: 1.5rem;">
+                            <input type="password" id="pwd-input" placeholder="Digita una password per testarla...">
+                            <button id="toggle-pwd" style="position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem;">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div style="height: 6px; background: var(--border-color); border-radius: var(--radius-full); margin-bottom: 1rem; overflow: hidden;">
+                            <div id="pwd-fill" style="height: 100%; width: 0%; transition: width 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), background-color 0.4s;"></div>
+                        </div>
+                        
+                        <div id="pwd-feedback" style="font-weight: 500; font-size: 0.95rem; margin-bottom: 2rem; color: var(--text-muted);">Inizia a digitare per calcolare l'entropia...</div>
+
+                        <div style="background: var(--bg-surface-alt); padding: 1.5rem; border-radius: var(--radius-md);">
+                            <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Criteri Crittografici</h4>
+                            <ul style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; font-size: 0.95rem;">
+                                <li id="req-length" style="color: var(--text-muted);"><i class="fa-solid fa-circle-xmark" style="color: var(--danger); margin-right: 0.5rem;"></i> Minimo 8 caratteri</li>
+                                <li id="req-upper" style="color: var(--text-muted);"><i class="fa-solid fa-circle-xmark" style="color: var(--danger); margin-right: 0.5rem;"></i> Lettera maiuscola</li>
+                                <li id="req-number" style="color: var(--text-muted);"><i class="fa-solid fa-circle-xmark" style="color: var(--danger); margin-right: 0.5rem;"></i> Contiene un numero</li>
+                                <li id="req-special" style="color: var(--text-muted);"><i class="fa-solid fa-circle-xmark" style="color: var(--danger); margin-right: 0.5rem;"></i> Carattere speciale</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tool 3: Glossary -->
+                    <div class="card reveal delay-2">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                            <div class="card-icon" style="margin: 0; color: var(--secondary); background: rgba(13, 148, 136, 0.1);"><i class="fa-solid fa-book-bookmark"></i></div>
+                            <h2 class="title-md" style="margin: 0;">Glossario Live</h2>
+                        </div>
+                        <p class="card-text" style="margin-bottom: 2rem;">Cerca i termini della sicurezza digitale.</p>
+                        
+                        <div style="position: relative; margin-bottom: 2rem;">
+                            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                            <input type="text" id="glossary-search" placeholder="Es. Phishing, Doxing..." style="padding-left: 3.5rem;">
+                        </div>
+
+                        <div id="glossary-list" style="overflow-y: auto; max-height: 400px; padding-right: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                            <!-- JS Inject -->
+                        </div>
+                    </div>
+
+                    <!-- Tool 4: Phishing Scanner -->
+                    <div class="card reveal delay-3">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                            <div class="card-icon" style="margin: 0; color: var(--warning); background: rgba(245, 158, 11, 0.1);"><i class="fa-solid fa-link"></i></div>
+                            <h2 class="title-md" style="margin: 0;">URL Scanner (Phishing)</h2>
+                        </div>
+                        <p class="card-text" style="margin-bottom: 2rem;">Incolla un link sospetto per analizzare i segnali di allarme (es. domini falsi o HTTP).</p>
+                        
+                        <div style="position: relative; margin-bottom: 1.5rem; display: flex;">
+                            <input type="text" id="url-input" placeholder="Es. http://www.faceb00k-login.com" style="flex: 1; border-radius: var(--radius-sm) 0 0 var(--radius-sm); border-right: none;">
+                            <button id="url-scan-btn" style="background: var(--warning); color: white; border: none; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 0 1.2rem; cursor: pointer; transition: opacity 0.2s;"><i class="fa-solid fa-satellite-dish"></i></button>
+                        </div>
+                        
+                        <div id="url-feedback" style="font-weight: 500; font-size: 0.95rem; margin-bottom: 1rem; color: var(--text-muted);">Inserisci un URL per iniziare...</div>
+
+                        <div id="url-results" style="display: flex; flex-direction: column; gap: 0.6rem;">
+                            <!-- JS Inject -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">DigiCivics.</h3>
+                    <p style="max-width: 300px;">Progettato per l'eccellenza in Tecnologie (TDP) ed Educazione Civica.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Copyright © 2026 DigiCivics. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/tools.js"></script>
+    <script src="js/network.js"></script>
+</body>
+</html>

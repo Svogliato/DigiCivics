@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiCivics | Simulatore OS</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern Chat Simulator Styles */
+        .simulator-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4rem;
+            min-height: calc(100vh - 180px);
+        }
+
+        .chat-frame {
+            width: 100%;
+            max-width: 450px;
+            height: 700px;
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-float);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: var(--bg-surface);
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 50;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .group-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .chat-view {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: var(--bg-main);
+        }
+
+        .imessage {
+            max-width: 80%;
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: scale(0.9);
+            transform-origin: bottom;
+        }
+
+        @keyframes popIn {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .msg-received {
+            align-self: flex-start;
+            background: var(--bg-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-sent {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .chat-controls {
+            padding: 1.5rem;
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .imessage-btn {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .imessage-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+
+        /* Typing Indicator */
+        .typing-bubble {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--radius-md);
+            align-self: flex-start;
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-bubble span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: iMsgBounce 1.4s infinite ease-in-out;
+        }
+        .typing-bubble span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-bubble span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes iMsgBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.6; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 900px) {
+            .simulator-container { flex-direction: column; gap: 3rem; margin-top: 2rem; }
+            .info-panel { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">DigiCivics.</a>
+            <ul class="nav-menu hidden-mobile" id="nav-menu">
+                <li><a href="index.html" class="nav-link">Panoramica</a></li>
+                <li><a href="cyberbullismo.html" class="nav-link">Cyberbullismo</a></li>
+                <li><a href="tools.html" class="nav-link">Privacy</a></li>
+                <li><a href="simulator.html" class="nav-link active">Simulatore</a></li>
+            </ul>
+
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Cambia tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="hamburger" id="hamburger" aria-label="Menu" style="display: none; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main style="padding-top: 100px; padding-bottom: 4rem;">
+        <div class="container simulator-container">
+            
+            <!-- Left Info Panel -->
+            <div class="info-panel reveal" style="flex: 1; max-width: 500px;">
+                <span class="pill">Interactive Experience</span>
+                <h1 class="title-xl" style="margin-top: 1rem;">Simulatore di <br><span class="text-gradient">Scenari.</span></h1>
+                <p class="subtitle mt-4 mb-4">
+                    Mettiti alla prova. Sei stato appena aggiunto a un gruppo dove stanno deridendo un compagno.
+                    Cosa fai? Le tue risposte plasmeranno l'esito della conversazione.
+                </p>
+                <div style="display: flex; gap: 1rem; align-items: center; color: var(--text-muted); font-size: 0.95rem;">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i>
+                    <span>Analizza. Decidi. Agisci.</span>
+                </div>
+            </div>
+
+            <!-- Right App Mockup -->
+            <div class="chat-frame reveal delay-2">
+                
+                <div class="chat-header">
+                    <i class="fa-solid fa-chevron-left" style="color: var(--primary); font-size: 1.2rem; cursor: pointer;"></i>
+                    <div class="group-avatar"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                        <h3 style="font-size: 1.05rem; margin-bottom: 2px;">Compagni 3^A</h3>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">5 Partecipanti</p>
+                    </div>
+                </div>
+
+                <div class="chat-view" id="chat-area">
+                    <!-- Messaggi inseriti tramite JS -->
+                    <div class="typing-bubble" id="typing-indicator" style="display: none;">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+
+                <div class="chat-controls" id="controls-area">
+                    <!-- Bottoni di scelta inseriti tramite JS -->
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/simulator.js"></script>
+</body>
+</html>
