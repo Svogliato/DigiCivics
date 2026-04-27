@@ -1,5 +1,5 @@
 /**
- * tools.js - Logica per Password Checker e Glossario
+ * tools.js - Logica per Password Checker, Glossario e URL Scanner
  */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -144,11 +144,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. Phishing URL Scanner ---
+    // --- 3. Phishing URL Scanner API Simulato ---
     const urlInput = document.getElementById('url-input');
     const urlScanBtn = document.getElementById('url-scan-btn');
     const urlFeedback = document.getElementById('url-feedback');
     const urlResults = document.getElementById('url-results');
+
+    // "Database" locale di domini noti per phishing o spam
+    const maliciousDB = [
+        'faceb00k-login.com', 'paypal-update-account.net', 'secure-apple-id.com',
+        'postitaliane-sicurezza.it', 'netflix-verify-info.com', 'amazon-billing-update.com',
+        'intesa-sanpaolo-alert.com', 'win-free-iphone.net'
+    ];
 
     if (urlScanBtn && urlInput) {
         urlScanBtn.addEventListener('click', analyzeUrl);
@@ -157,26 +164,56 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function analyzeUrl() {
+    async function analyzeUrl() {
         const rawUrl = urlInput.value.trim();
         if (!rawUrl) return;
 
         urlResults.innerHTML = '';
+        
+        // Simula la richiesta a una API
+        urlFeedback.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Interrogazione API Threat Intelligence in corso...';
+        urlFeedback.style.color = 'var(--primary)';
+        
+        urlScanBtn.disabled = true;
+        urlScanBtn.style.opacity = '0.5';
+
+        // Attesa artificiale di 1.2 secondi per simulare l'API network latency
+        await new Promise(resolve => setTimeout(resolve, 1200));
+
+        urlScanBtn.disabled = false;
+        urlScanBtn.style.opacity = '1';
+
         let url;
-        let riskScore = 0; // Più alto = più rischioso
+        let riskScore = 0; 
         const findings = [];
 
         try {
-            // Aggiungi un protocollo fittizio se manca, per far funzionare URL()
             const urlString = rawUrl.startsWith('http') ? rawUrl : 'http://' + rawUrl;
             url = new URL(urlString);
         } catch (e) {
-            urlFeedback.textContent = "URL non valido.";
+            urlFeedback.textContent = "URL non valido. Assicurati di inserire un link corretto.";
             urlFeedback.style.color = 'var(--danger)';
             return;
         }
 
-        // Analisi Protocollo HTTP vs HTTPS
+        const hostname = url.hostname.toLowerCase();
+
+        // Controllo "API" / Database Blacklist
+        let isBlacklisted = false;
+        for (let badDomain of maliciousDB) {
+            if (hostname.includes(badDomain)) {
+                isBlacklisted = true;
+                riskScore += 100;
+                findings.push({ icon: 'fa-skull-crossbones', color: 'var(--danger)', text: '🔴 MATCH API: Questo dominio è presente nel database globale delle minacce (Phishing).' });
+                break;
+            }
+        }
+
+        if (!isBlacklisted) {
+            findings.push({ icon: 'fa-database', color: 'var(--success)', text: '🟢 API Check: Il dominio non è presente nella nostra blacklist nota.' });
+        }
+
+        // Analisi Euristica
         if (url.protocol === 'http:') {
             riskScore += 40;
             findings.push({ icon: 'fa-lock-open', color: 'var(--danger)', text: 'Connessione HTTP non sicura (i dati viaggiano in chiaro).' });
@@ -184,15 +221,12 @@ document.addEventListener('DOMContentLoaded', () => {
             findings.push({ icon: 'fa-lock', color: 'var(--success)', text: 'Connessione HTTPS sicura (dati cifrati).' });
         }
 
-        // Analisi Dominio IP vs Testo
-        const isIp = /^(\d{1,3}\.){3}\d{1,3}$/.test(url.hostname);
+        const isIp = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname);
         if (isIp) {
             riskScore += 50;
             findings.push({ icon: 'fa-server', color: 'var(--danger)', text: 'Il dominio è un indirizzo IP, tecnica comune per nascondere identità.' });
         }
 
-        // Analisi lunghezza e trattini (comuni nel typosquatting)
-        const hostname = url.hostname;
         if (hostname.split('-').length > 2) {
             riskScore += 20;
             findings.push({ icon: 'fa-minus', color: 'var(--warning)', text: 'Troppi trattini nel dominio, spesso usato per ingannare (es. paypal-login-secure).' });
@@ -203,14 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
             findings.push({ icon: 'fa-text-width', color: 'var(--warning)', text: 'Dominio insolitamente lungo.' });
         }
 
-        // Controllo Typosquatting base (caratteri omoglifi o sostituzioni banali)
-        if (/[0-9]/.test(hostname) && !isIp) {
-            // Se contiene numeri in mezzo a lettere, potrebbe essere es. faceb00k
+        if (/[0-9]/.test(hostname) && !isIp && !isBlacklisted) {
             riskScore += 20;
             findings.push({ icon: 'fa-eye-low-vision', color: 'var(--warning)', text: 'Contiene numeri: verifica che non sia un "Typosquatting" (es. faceb00k o rnicrosoft).' });
         }
 
-        // URL Shorteners
         const shorteners = ['bit.ly', 'tinyurl.com', 't.co', 'goo.gl', 'is.gd'];
         if (shorteners.some(s => hostname.includes(s))) {
             riskScore += 30;
@@ -219,15 +250,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Rendering Feedback Globale
         if (riskScore >= 50) {
-            urlFeedback.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Rischio Alto! Potenziale Phishing.';
+            urlFeedback.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Rischio Alto! Potenziale Phishing / Truffa.';
             urlFeedback.style.color = 'var(--danger)';
         } else if (riskScore > 0) {
-            urlFeedback.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Sospetto. Fai attenzione.';
+            urlFeedback.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Sospetto. Fai attenzione e verifica la fonte.';
             urlFeedback.style.color = 'var(--warning)';
         } else {
-            urlFeedback.innerHTML = '<i class="fa-solid fa-shield-check"></i> Sembra legittimo, ma resta vigile.';
+            urlFeedback.innerHTML = '<i class="fa-solid fa-shield-check"></i> Sicuro. Nessuna minaccia rilevata.';
             urlFeedback.style.color = 'var(--success)';
-            findings.push({ icon: 'fa-check', color: 'var(--success)', text: 'Nessuna anomalia evidente trovata.' });
         }
 
         // Rendering Dettagli
